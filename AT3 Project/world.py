@@ -1,15 +1,20 @@
 from backpack import BackPack
+from location import Location
 import codecs
 
 
-class Location:
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-        self.neighbors = []
-
-    def add_neighbor(self, neighbor):
-        self.neighbors.append(neighbor)
+# class Location:
+#     def __init__(self, name, description):
+#         self.name = name
+#         self.description = description
+#         self.neighbors = []
+#         self.objects = []  # Stores the objects present in the location
+#
+#     def add_neighbor(self, neighbor):
+#         self.neighbors.append(neighbor)
+#
+#     def get_objects(self):
+#         return self.objects
 
 
 class Game:
@@ -37,13 +42,36 @@ class Game:
             print(self.current_location.description)
             print("Neighbors:", [neighbor.name for neighbor in self.current_location.neighbors])
 
-            command = input("Enter a command (move, quit): ").lower()
+            command = input("Enter a command (move, look, pick up, quit): ").lower()
 
             if command == "quit":
                 print("Goodbye!")
                 break
             elif command == "move":
                 self.move()
+            elif command == "look":
+                self.look()
+            elif command == "pick up":
+                item = input("Enter the name of the item to pick up: ")
+                self.pick_up(item)
+
+    def look(self):
+        current_objects = self.current_location.get_objects()
+        if current_objects:
+            print("You see the following objects in the", self.current_location.name + ":")
+            for obj in current_objects:
+                print(obj)
+        else:
+            print("There are no objects in the", self.current_location.name + ".")
+
+    def pick_up(self, item):
+        current_objects = self.current_location.get_objects()
+        if item in current_objects:
+            self.backpack.add(item)
+            current_objects.remove(item)
+            print("You picked up the", item + ".")
+        else:
+            print("The", item, "is not available in the", self.current_location.name + ".")
 
     def move(self):
         # Create a dictionary to store valid moves
@@ -69,6 +97,7 @@ class Game:
             # Update the current location based on the selected move
             self.current_location = valid_moves[move]
             self.update_map()  # Update the map file after moving
+            self.print_map()
         else:
             print("Invalid move. Please try again.")
 
@@ -79,7 +108,10 @@ class Game:
     def update_map(self):
         with codecs.open("map.txt", "r+", encoding="utf-8") as map_file:
             map_data = map_file.read()
+            # file = open(location, rb+)
             map_data = map_data.replace("▢", "X", 1)  # Replace the first unvisited location with "X"
+            # [x, y] location = x + row_length * y
+            # write(b'X')
             map_file.seek(0)
             map_file.write(map_data)
 
@@ -94,31 +126,41 @@ def create_map_file():
         map_file.write(map_data)
 
 
-# Create an instance of the game
-game = Game()
-print(game.print_map())
+if __name__ == '__main__':
 
-# Create locations
-game.create_location("Living Room", "You are in a living room.")
-game.create_location("Kitchen", "You are in a kitchen.")
-game.create_location("Bedroom", "You are in a bedroom.")
-game.create_location("Bathroom", "You are in a bathroom")
-game.create_location("Gaming room", "You are in Gaming room ")
-game.create_location("Garage", "You are in the garage")
+    # Create an instance of the game
+    game = Game()
 
-# Connect locations
-game.connect_locations(game.locations["Living Room"], game.locations["Kitchen"])
-game.connect_locations(game.locations["Living Room"], game.locations["Bedroom"])
-game.connect_locations(game.locations['Bedroom'], game.locations['Bathroom'])
-game.connect_locations(game.locations["Living Room"], game.locations["Gaming room"])
-game.connect_locations(game.locations["Living Room"], game.locations["Garage"])
+    # Create locations
+    game.create_location("Living Room", "You are in a cozy living room.")
+    game.locations["Living Room"].objects.append("Lamp")
+    game.locations["Living Room"].objects.append("TV")
 
-# Create the map file if it doesn't exist
-create_map_file()
+    game.create_location("Kitchen", "You are in a modern kitchen.")
+    game.locations["Kitchen"].objects.append("Break")
+    game.locations["Kitchen"].objects.append("Apple")
 
-# Start the game
-game.start_game()
+    game.create_location("Bedroom", "You are in a comfortable bedroom.")
+    game.locations["Bedroom"].objects.append("Bed")
+    game.locations["Bedroom"].objects.append("Dresser")
 
-# print map
-print('The map\n')
-game.print_map()
+    game.create_location("Bathroom", "You are in a clean bathroom.")
+    game.locations["Bathroom"].objects.append("Toilet")
+    game.locations["Bathroom"].objects.append("Towel")
+
+    # Connect locations
+    game.connect_locations(game.locations["Living Room"], game.locations["Kitchen"])
+    game.connect_locations(game.locations["Living Room"], game.locations["Bedroom"])
+    game.connect_locations(game.locations['Bedroom'], game.locations['Bathroom'])
+
+
+
+    # Create the map file if it doesn't exist
+    create_map_file()
+
+    # Start the game
+    game.start_game()
+
+    # print map
+    print('The map\n')
+    game.print_map()
