@@ -8,6 +8,11 @@ from colorama import Fore
 
 class Game:
     def __init__(self, adventure_name):
+        """
+        Initialize the Game object with the provided adventure name.
+
+        :param adventure_name: The name of the adventure game.
+        """
         self.adventure_name = adventure_name
         self.locations = {}
         self.current_location = None
@@ -16,14 +21,29 @@ class Game:
         self.goal = "Re-engage the safety system of the reactor core to prevent a core meltdown."
 
     def create_location(self, name, description):
+        """
+        Create a new location with the provided name and description and add it to the game.
+
+        :param name: The name of the location.
+        :param description: The description of the location.
+        """
         location = Location(name, description)
         self.locations[name] = location
 
     def connect_locations(self, loc1, loc2):
+        """
+        Connect two locations together as neighboring locations.
+
+        :param loc1: The first location.
+        :param loc2: The second location.
+        """
         loc1.add_neighbor(loc2)
         loc2.add_neighbor(loc1)
 
     def start_game(self):
+        """
+        Start the adventure game.
+        """
         print(Fore.CYAN + '==> WELCOME TO ADVENTURE GAME <==' + Fore.RESET)
 
         # print("Adventure Map:")
@@ -52,10 +72,16 @@ class Game:
             self.play_again()
 
     def display_exits(self):
+        """
+        Display the available exits from the current location.
+        """
         exits = self.current_location.get_exits()
         print(Fore.YELLOW + "Available exits:" + Fore.RESET, exits)
 
     def play(self):
+        """
+        Play the adventure game.
+        """
         while True:
             print(self.current_location.name)
             print(self.current_location.description)
@@ -63,10 +89,10 @@ class Game:
                   [neighbor.name for neighbor in self.current_location.neighbors])
 
             command = input(Fore.BLUE + "Enter a command " + Fore.RESET
-                            + Fore.RED + "(move, look, pick up, rucksack, quit):"
+                            + Fore.RED + "(move, look, pick up, rucksack, exit):"
                             + Fore.RESET).lower()
 
-            if command == "quit":
+            if command == "exit":
                 print("Goodbye!")
                 self.play_again()
 
@@ -81,6 +107,9 @@ class Game:
                 self.display_items()
 
     def look(self):
+        """
+        Look for objects in the current location and display them.
+        """
         current_objects = self.current_location.get_objects()
         if current_objects:
             print(Fore.LIGHTCYAN_EX + "You see the following objects in the:" + Fore.RESET + Fore.RED,
@@ -91,6 +120,11 @@ class Game:
             print("There are no objects in the", self.current_location.name + ".")
 
     def pick_up_item(self, item_name):
+        """
+        Pick up an item from the current location and add it to the backpack.
+
+        :param item_name: The name of the item to pick up.
+        """
         item = self.current_location.pick_up(item_name)
         if item is not None:
             if self.backpack.add(item):
@@ -101,6 +135,9 @@ class Game:
             print(f"{item_name} is not available in {self.current_location.name}.")
 
     def move(self):
+        """
+        Move to a neighboring location based on the player's input.
+        """
         # Create a dictionary to store valid moves
         valid_moves = {}
 
@@ -165,8 +202,8 @@ class Game:
         self.game_map.display_map()
 
         if self.current_location.name == "Reactor Core":
-            print(Fore.GREEN + "Congratulations! You successfully re-engaged the safety system of the reactor core.")
-            print( Fore.BLUE + "You have prevented a core meltdown. YOU WIN!" + Fore.RESET)
+            print(Fore.GREEN + "\n CONGRATULATIONS! You successfully re-engaged the safety system of the reactor core.")
+            print(Fore.BLUE + "You have prevented a core meltdown. YOU WIN! \n" + Fore.RESET)
             self.play_again()
 
     def display_items(self):

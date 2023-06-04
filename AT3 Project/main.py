@@ -1,10 +1,17 @@
 from game import Game
 from item import Item
+from colorama import Fore
 
 adventure_name = "==> WELCOME TO ADVENTURE GAME <=="
 
 
 def create_game():
+    """
+    Create an instance of the adventure game and set up the game world.
+
+    :return: The created game object.
+    """
+
     # Create an instance of the game
     game = Game(adventure_name)
 
@@ -56,25 +63,45 @@ def create_game():
     # Set the winning condition
     game.winning_condition = game.locations["Reactor Core"]
 
-    # Start the game
     return game
 
 
+def display_instructions():
+    print(Fore.BLUE + "\n========== ADVENTURE GAME INSTRUCTIONS ==========" + Fore.RESET)
+    print("Welcome to the Adventure Game!")
+    print(Fore.RED+"Your mission is to reach the REACTOR CORE.\n" + Fore.RESET)
+    print(Fore.BLUE + "INSTRUCTIONS" + Fore.RESET)
+    print(Fore.BLUE + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" + Fore.RESET)
+    print(" You will navigate through various locations, collect items, and solve puzzles to progress.")
+    print(Fore.BLUE + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" + Fore.RESET)
+    print(Fore.RED + "Use the following commands to play the game:" + Fore.RESET)
+    print(" ⚽ 'go <direction>' to move to a neighboring location (e.g., 'N north').")
+    print(" ⚽ 'look' to get a description of your current location.")
+    print(" ⚽ 'rucksack' inventory to view the items you have collected.")
+    print(" ⚽ 'pick up <item>' to pick up an item in your current location (e.g., 'pick up key').")
+    print(" ⚽ 'quit' to exit the game at any time.")
+    print("Good luck and have fun!")
+    print("==========================================================================================\n")
+
+
 if __name__ == '__main__':
-    game = create_game()
+    display_instructions()
+    main_game = create_game()
 
     while True:
-        print("==== Adventure Game Menu ====")
-        print("Option 1: Exit the game.")
-        print("Option 2: Start again")
-        option = input("Enter your option (1/2): ")
+        print(Fore.LIGHTGREEN_EX + "==== Adventure Game Menu ====")
+        print("= Option 1: Exit the game   =")
+        print("= Option 2: Start again     =")
+        print("=============================" + Fore.RESET)
+        option = input(Fore.BLUE + "Enter your option (1/2): " + Fore.RESET)
 
         if option == "1":
             print("Exiting the game. Goodbye!")
             break
         elif option == "2":
             print("Starting a new game...")
-            game = create_game()
-            game.start_game()
+            display_instructions()
+            main_game = create_game()
+            main_game.start_game()
         else:
             print("Invalid option. Please try again.")

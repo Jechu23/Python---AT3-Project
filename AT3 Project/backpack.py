@@ -13,6 +13,9 @@ class BackPack:
     MAX_CAPACITY = 5
 
     def __init__(self, items=None):
+        """
+        Initialize the BackPack object.
+        """
         self._backpack = []
         if items is not None:
             if isinstance(items, list):
@@ -61,7 +64,7 @@ class BackPack:
                returns position if found
                :param item:
                :return: -1 | False | integer
-               """
+        """
         left = 0
         right = len(self._backpack) - 1
 
