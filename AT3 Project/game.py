@@ -1,5 +1,6 @@
 from backpack import BackPack
 from location import Location
+from item import Item
 from colorama import Fore
 
 
@@ -9,6 +10,7 @@ class Game:
         self.locations = {}
         self.current_location = None
         self.backpack = BackPack([])
+
 
     def create_location(self, name, description):
         location = Location(name, description)
@@ -20,8 +22,26 @@ class Game:
 
     def start_game(self):
         print(Fore.CYAN + '==> WELCOME TO ADVENTURE GAME <==' + Fore.RESET)
-        self.current_location = list(self.locations.values())[0]
-        self.play()
+
+        # Check if the player has the key to enter the house
+        has_key = input(Fore.YELLOW + "Welcome home! Do you have the key to enter? (Yes/No): " + Fore.RESET).lower()
+        if has_key == "yes":
+            # Create an instance of the key item
+            key_item = Item("Key", "A small key for unlocking doors", "Property 1", "Property 2")
+            self.backpack.add(key_item)  # Add the key to the backpack
+            print("You picked up the key.")
+
+            # Prompt the player to open the door
+            open_door = input(Fore.YELLOW + "Do you want to open the door? (Yes/No): " + Fore.RESET).lower()
+            if open_door == "yes":
+                # Move the player to the living room and start the game
+                self.current_location = self.locations["Living Room"]
+                print("You opened the door and entered the Living Room.")
+                self.play()
+            else:
+                print("You decided not to open the door. Goodbye!")
+        else:
+            print("You don't have the key to enter. Goodbye!")
 
     def display_exits(self):
         exits = self.current_location.get_exits()
@@ -83,7 +103,7 @@ class Game:
                 valid_moves[str(i + 1)] = neighbor
 
         # Display the available moves to the player
-        print("Available moves:", list(valid_moves.keys()))
+        # print("Available moves:", list(valid_moves.keys()))
 
         # Display the available exits to the player
         self.display_exits()
@@ -101,7 +121,7 @@ class Game:
             if move_index < len(self.current_location.neighbors):
                 # Update the current location based on the selected direction
                 self.current_location = self.current_location.neighbors[move_index]
-                print("Moved to", self.current_location.name)
+                print(Fore.YELLOW + "Moved to:" + Fore.RESET, self.current_location.name )
             else:
                 print("Invalid move. Please try again.")
         else:

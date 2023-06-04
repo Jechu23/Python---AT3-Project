@@ -17,8 +17,8 @@ if __name__ == '__main__':
     # Create an instance of the game
     game = Game(adventure_name)
 
-    lamp = Item("Lamp", "A bright lamp for illumination", "Property 1 value", "Property 2 value")
-    book = Item("Book", "An interesting book to read", "Property 1 value", "Property 2 value")
+    # lamp = Item("Lamp", "A bright lamp for illumination", "Property 1 value", "Property 2 value")
+    # book = Item("Book", "An interesting book to read", "Property 1 value", "Property 2 value")
     # Create more instances of items with different values for properties
 
     # Create locations
