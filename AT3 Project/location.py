@@ -1,6 +1,5 @@
 
 
-
 class Location:
     def __init__(self, name, description):
         self.name = name
@@ -10,6 +9,9 @@ class Location:
 
     def add_neighbor(self, neighbor):
         self.neighbors.append(neighbor)
+
+    def has_neighbor(self, location):
+        return location in self.neighbors
 
     def get_objects(self):
         return self.objects
@@ -26,6 +28,8 @@ class Location:
                 self.objects.remove(item)
                 return item
         return None
+
+
 
 
 

@@ -1,6 +1,8 @@
+import sys
 from backpack import BackPack
 from location import Location
 from item import Item
+from map import Map
 from colorama import Fore
 
 
@@ -10,7 +12,8 @@ class Game:
         self.locations = {}
         self.current_location = None
         self.backpack = BackPack([])
-
+        self.game_map = Map(3, 3)  # Adjust the size according to your map dimensions
+        self.goal = "Re-engage the safety system of the reactor core to prevent a core meltdown."
 
     def create_location(self, name, description):
         location = Location(name, description)
@@ -22,6 +25,9 @@ class Game:
 
     def start_game(self):
         print(Fore.CYAN + '==> WELCOME TO ADVENTURE GAME <==' + Fore.RESET)
+
+        # print("Adventure Map:")
+        # self.game_map.display_map()
 
         # Check if the player has the key to enter the house
         has_key = input(Fore.YELLOW + "Welcome home! Do you have the key to enter? (Yes/No): " + Fore.RESET).lower()
@@ -40,18 +46,21 @@ class Game:
                 self.play()
             else:
                 print("You decided not to open the door. Goodbye!")
+                self.play_again()
         else:
             print("You don't have the key to enter. Goodbye!")
+            self.play_again()
 
     def display_exits(self):
         exits = self.current_location.get_exits()
-        print(Fore.YELLOW + "Available exits:" + Fore.RESET, exits )
+        print(Fore.YELLOW + "Available exits:" + Fore.RESET, exits)
 
     def play(self):
         while True:
             print(self.current_location.name)
             print(self.current_location.description)
-            print(Fore.YELLOW + "Neighbors:" + Fore.RESET, [neighbor.name for neighbor in self.current_location.neighbors] )
+            print(Fore.YELLOW + "Neighbors:" + Fore.RESET,
+                  [neighbor.name for neighbor in self.current_location.neighbors])
 
             command = input(Fore.BLUE + "Enter a command " + Fore.RESET
                             + Fore.RED + "(move, look, pick up, rucksack, quit):"
@@ -59,7 +68,8 @@ class Game:
 
             if command == "quit":
                 print("Goodbye!")
-                break
+                self.play_again()
+
             elif command == "move":
                 self.move()
             elif command == "look":
@@ -73,7 +83,8 @@ class Game:
     def look(self):
         current_objects = self.current_location.get_objects()
         if current_objects:
-            print(Fore.LIGHTCYAN_EX + "You see the following objects in the:" + Fore.RESET + Fore.RED, self.current_location.name + ":" + Fore.RESET)
+            print(Fore.LIGHTCYAN_EX + "You see the following objects in the:" + Fore.RESET + Fore.RED,
+                  self.current_location.name + ":" + Fore.RESET)
             for obj in current_objects:
                 print(obj)
         else:
@@ -102,9 +113,6 @@ class Game:
                 # Otherwise, add the neighbor as a valid move with the move number as the key
                 valid_moves[str(i + 1)] = neighbor
 
-        # Display the available moves to the player
-        # print("Available moves:", list(valid_moves.keys()))
-
         # Display the available exits to the player
         self.display_exits()
 
@@ -121,18 +129,63 @@ class Game:
             if move_index < len(self.current_location.neighbors):
                 # Update the current location based on the selected direction
                 self.current_location = self.current_location.neighbors[move_index]
-                print(Fore.YELLOW + "Moved to:" + Fore.RESET, self.current_location.name )
+                print(Fore.YELLOW + "Moved to:" + Fore.RESET, self.current_location.name)
+
+                # Update the map to mark the new location as visited
+                self.game_map.mark_visited(move_index, move_index)
+
+                # Get the current row and column indices
+                current_row, current_column = self.game_map.get_current_indices()
+
+                move_row = None
+                move_column = None
+
+                # Determine the new row and column indices based on the direction
+                if direction == "N":
+                    move_row = current_row - 1
+                    move_column = current_column
+                elif direction == "E":
+                    move_row = current_row
+                    move_column = current_column + 1
+                elif direction == "S":
+                    move_row = current_row + 1
+                    move_column = current_column
+                elif direction == "W":
+                    move_row = current_row
+                    move_column = current_column - 1
+
+                # Update the current indices in the map
+                self.game_map.set_current_indices(move_row, move_column)
             else:
                 print("Invalid move. Please try again.")
         else:
             print("Invalid direction. Please try again.")
 
-    def print_map(self):
-        with open("map.txt", "r", encoding="utf-8") as map_file:
-            map_data = map_file.read()
-            print(map_data)
+        print("Adventure Map:")
+        self.game_map.display_map()
+
+        if self.current_location.name == "Reactor Core":
+            print(Fore.GREEN + "Congratulations! You successfully re-engaged the safety system of the reactor core.")
+            print( Fore.BLUE + "You have prevented a core meltdown. YOU WIN!" + Fore.RESET)
+            self.play_again()
 
     def display_items(self):
         self.backpack.display_items()
+
+    def play_again(self):
+        while True:
+            option = input("Option 1: Exit the game.\n"
+                           "Option 2: Start again\n"
+                           "Enter your option (1/2): ").strip()
+            if option == "1":
+                print("Goodbye!")
+                # You can use the `sys` module to exit the program
+                sys.exit(0)  # Exit the program with a successful status
+            elif option == "2":
+                self.start_game()
+                break
+            else:
+                print("Invalid option. Please choose 1 or 2.")
+
 
 

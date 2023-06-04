@@ -55,7 +55,6 @@ class BackPack:
         else:
             print("The backpack is empty.")
 
-
     def in_backpack(self, item):
         """    Complete this method using a binary search
                returns -1 or False if not found
