@@ -12,6 +12,9 @@ class GameTests(unittest.TestCase):
         self.game = Game("==> WELCOME TO ADVENTURE GAME <==")
 
     def test_create_location(self):
+        self.game.create_location("Location 1", "Description 1")
+        self.game.create_location("Location 2", "Description 2")
+
         self.assertEqual(len(self.game.locations), 2)
         self.assertIn("Location 1", self.game.locations)
         self.assertIn("Location 2", self.game.locations)
