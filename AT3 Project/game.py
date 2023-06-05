@@ -11,7 +11,7 @@ class Game:
         """
         Initialize the Game object with the provided adventure name.
 
-        :param adventure_name: The name of the adventure game.
+        param adventure_name: The name of the adventure game.
         """
         self.adventure_name = adventure_name
         self.locations = {}
@@ -24,8 +24,8 @@ class Game:
         """
         Create a new location with the provided name and description and add it to the game.
 
-        :param name: The name of the location.
-        :param description: The description of the location.
+        param name: The name of the location.
+        param description: The description of the location.
         """
         location = Location(name, description)
         self.locations[name] = location
@@ -34,8 +34,8 @@ class Game:
         """
         Connect two locations together as neighboring locations.
 
-        :param loc1: The first location.
-        :param loc2: The second location.
+        param loc1: The first location.
+        param loc2: The second location.
         """
         loc1.add_neighbor(loc2)
         loc2.add_neighbor(loc1)
@@ -45,9 +45,6 @@ class Game:
         Start the adventure game.
         """
         print(Fore.CYAN + '==> WELCOME TO ADVENTURE GAME <==' + Fore.RESET)
-
-        # print("Adventure Map:")
-        # self.game_map.display_map()
 
         # Check if the player has the key to enter the house
         has_key = input(Fore.YELLOW + "Welcome home! Do you have the key to enter? (Yes/No): " + Fore.RESET).lower()
@@ -78,6 +75,14 @@ class Game:
         exits = self.current_location.get_exits()
         print(Fore.YELLOW + "Available exits:" + Fore.RESET, exits)
 
+    def display_characters(self):
+        current_location = self.current_location
+        characters = []
+        if current_location.characters:
+            for character in current_location.characters:
+                characters.append(character.name)
+        return characters
+
     def play(self):
         """
         Play the adventure game.
@@ -87,6 +92,13 @@ class Game:
             print(self.current_location.description)
             print(Fore.YELLOW + "Neighbors:" + Fore.RESET,
                   [neighbor.name for neighbor in self.current_location.neighbors])
+            characters = self.display_characters()
+            if characters:
+                print(Fore.LIGHTCYAN_EX + "Characters in the current location: " + Fore.RESET)
+                for character in characters:
+                    print(character + Fore.LIGHTBLUE_EX + ": Write 'talk' to have a conversation with her." + Fore.RESET)
+            else:
+                print(Fore.GREEN + "No characters in this location." + Fore.RESET)
 
             command = input(Fore.BLUE + "Enter a command " + Fore.RESET
                             + Fore.RED + "(move, look, pick up, rucksack, exit):"
@@ -105,6 +117,8 @@ class Game:
                 self.pick_up_item(item)
             elif command == "rucksack":
                 self.display_items()
+            elif command == "talk":
+                self.current_location.talk()
 
     def look(self):
         """
@@ -123,14 +137,14 @@ class Game:
         """
         Pick up an item from the current location and add it to the backpack.
 
-        :param item_name: The name of the item to pick up.
+        param item_name: The name of the item to pick up.
         """
         item = self.current_location.pick_up(item_name)
         if item is not None:
             if self.backpack.add(item):
                 print(f"You picked up {item.name}.")
             else:
-                print("Your backpack is full. You can't pick up more items.")
+                print("Your backpack is full. You can't pick up more than 5 items.")
         else:
             print(f"{item_name} is not available in {self.current_location.name}.")
 
@@ -198,8 +212,8 @@ class Game:
         else:
             print("Invalid direction. Please try again.")
 
-        print("Adventure Map:")
-        self.game_map.display_map()
+        # print("Adventure Map:")
+        # self.game_map.display_map()
 
         if self.current_location.name == "Reactor Core":
             print(Fore.GREEN + "\n CONGRATULATIONS! You successfully re-engaged the safety system of the reactor core.")
@@ -223,6 +237,3 @@ class Game:
                 break
             else:
                 print("Invalid option. Please choose 1 or 2.")
-
-
-

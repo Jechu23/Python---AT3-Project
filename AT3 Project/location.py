@@ -15,6 +15,7 @@ class Location:
         self.description = description
         self.neighbors = []
         self.objects = []  # Stores the objects present in the location
+        self.characters = []
 
     def add_neighbor(self, neighbor):
         """
@@ -24,6 +25,17 @@ class Location:
         neighbor (Location): The neighboring location to add.
         """
         self.neighbors.append(neighbor)
+
+    def add_character(self, character):
+        self.characters.append(character)
+
+    # def display_characters(self):
+    #     if self.characters:
+    #         print("Characters in this location:")
+    #         for character in self.characters:
+    #             print(character.name)
+    #     else:
+    #         print("There are no characters in this location.")
 
     def has_neighbor(self, location):
         """
@@ -79,6 +91,22 @@ class Location:
                 self.objects.remove(item)
                 return item
         return None
+
+    def talk(self):
+        if self.characters:
+            print("Characters in this location:")
+            for character in self.characters:
+                print(character.name)
+            character_name = input("Who would you like to talk to? ")
+            for character in self.characters:
+                if character.name.lower() == character_name.lower():
+                    character.start_conversation()
+                    break
+            else:
+                print("No such character is present in this location.")
+        else:
+            print("There are no characters in this location.")
+
 
 
 
