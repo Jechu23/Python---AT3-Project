@@ -108,12 +108,12 @@ def display_instructions():
         Fore.BLUE + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" + Fore.RESET)
     print(Fore.RED + "Use the following commands to play the game:" + Fore.RESET)
     print(" ⚽ 'move <direction>' to go to a neighboring location (e.g. 'N: north').")
-    print(" ⚽ 'look' to get a description of your current location.")
+    print(" ⚽ 'look' to get a description of your current location and objects.")
     print(" ⚽ 'rucksack' inventory to view the items you have collected.")
-    print(" ⚽ 'pick up <item>' to pick up an item in your current location (e.g., 'pick up key').")
+    print(" ⚽ 'pick up <item>' to pick up an item in your current location (e.g., 'pick up').")
     print(" ⚽ 'exit' to exit the game at any time.")
     print(Fore.RED + "IMPORTANT" + Fore.RESET, "Jen is a person inside one of the rooms. You can ask her questions,"
-                                               "such as 'where is the reactor core?' She will help you find it")
+                                               "such as 'where is the reactor core?' She will help you find it.")
     print("Good luck and have fun!")
     print("==========================================================================================\n")
 
